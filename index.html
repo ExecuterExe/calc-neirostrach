@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор «НейроПолис»</title>
+    <style>
+    
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        :root {
+            --bg-color: #f4f7fa;
+            --container-bg: #ffffff;
+            --primary-color: #007bff;
+            --secondary-color: #4a90e2;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #dce1e6;
+            --input-bg: #f9f9f9;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--label-color);
+            font-size: 1.5em;
+            font-weight: 500;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .intro-text {
+            text-align: center;
+            color: var(--label-color);
+            margin-bottom: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--label-color);
+            font-size: 0.95em;
+        }
+
+        input[type="number"], input[type="email"], select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: var(--input-bg);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .checkbox-group label:hover {
+            background-color: #e9ecef;
+        }
+
+        .checkbox-group input {
+            margin-right: 12px;
+            height: 18px;
+            width: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        .result-box {
+            background-color: #e9f2ff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .result-box .label {
+            font-size: 1em;
+            color: var(--label-color);
+            margin-bottom: 5px;
+        }
+
+        .result-box .value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        #result-sum { color: var(--danger-color); }
+        #final-cost { color: var(--success-color); }
+        #final-payout { color: var(--primary-color); }
+
+        small {
+            color: #888;
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85em;
+        }
+        
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .submit-button:active {
+            transform: scale(0.98);
+        }
+
+        .notification {
+            display: none; /* Скрыто по умолчанию */
+            padding: 15px;
+            margin-top: 20px;
+            background-color: var(--success-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <h1>Калькулятор «НейроПолис»</h1>
+    <p class="intro-text">Оцените риски и рассчитайте стоимость защиты вашего бизнеса в эпоху ИИ.</p>
+
+    <div class="step">
+        <h2>Шаг 1: Определение страховой суммы</h2>
+        <!-- Содержимое Шага 1 -->
+        <div class="form-group">
+            <label for="data-recovery-cost">Стоимость восстановления данных, руб.</label>
+            <input type="number" id="data-recovery-cost" value="50000" step="10000">
+        </div>
+        <div class="form-group">
+            <label for="code-recovery-cost">Стоимость восстановления ПО, руб.</label>
+            <input type="number" id="code-recovery-cost" value="1500000" step="50000">
+        </div>
+        <div class="form-group">
+            <label for="business-interruption-cost">Упущенная выгода из-за простоя, руб.</label>
+            <input type="number" id="business-interruption-cost" value="2100000" step="100000">
+        </div>
+        <div class="form-group">
+            <label for="crisis-cost">Антикризисные расходы, руб.</label>
+            <input type="number" id="crisis-cost" value="3000000" step="100000">
+        </div>
+        <div class="result-box">
+            <div class="label">Рекомендованная страховая сумма</div>
+            <div class="value" id="result-sum">0</div>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Шаг 2: Расчёт стоимости полиса</h2>
+        <!-- Содержимое Шага 2 -->
+        <div class="form-group">
+            <label for="insurance-sum">Ваша страховая сумма (лимит), руб.</label>
+            <input type="number" id="insurance-sum" value="10000000" step="1000000">
+        </div>
+        <div class="form-group">
+            <label for="industry-type">Отрасль вашего бизнеса</label>
+            <select id="industry-type">
+                <option value="0.012" selected>Финтех, SaaS (Высокий риск)</option>
+                <option value="0.008">E-commerce, Маркетинг (Средний риск)</option>
+                <option value="0.005">Прочие отрасли (Базовый риск)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Индекс Цифровой Зрелости (ИЦЗ)</label>
+             <div class="checkbox-group">
+                <label><input type="checkbox" class="icz-check" data-value="50">Внедрён Принцип Наименьших Привилегий (PoLP)</label>
+                <label><input type="checkbox" class="icz-check" data-value="30">Проводится регулярный внешний аудит ИИ-систем</label>
+                <label><input type="checkbox" class="icz-check" data-value="20">Используются системы мониторинга аномалий ИИ</label>
+            </div>
+        </div>
+        <div class="result-box">
+            <div class="label">Итоговая стоимость полиса в год</div>
+            <div class="value" id="final-cost">0</div>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Шаг 3: Моделирование страховой выплаты</h2>
+        <!-- Содержимое Шага 3 -->
+        <div class="form-group">
+            <label for="actual-loss">Предположим, фактический ущерб составил, руб.</label>
+            <input type="number" id="actual-loss" value="3000000" step="100000">
+        </div>
+        <div class="result-box">
+            <div class="label">Ваша страховая выплата составит</div>
+            <div class="value" id="final-payout">0</div>
+        </div>
+        <small style="text-align:center; margin-top:15px;">Расчёт учитывает безусловную франшизу: 10% от суммы ущерба, но не менее 50 000 руб.</small>
+    </div>
+
+    <div class="step">
+        <h2>Шаг 4: Получите точный расчёт</h2>
+        <p class="intro-text">Предварительные расчёты вас устраивают? Оставьте ваш e-mail, и наш эксперт свяжется с вами, чтобы провести детальный андеррайтинг и сформировать персональное предложение.</p>
+        <div class="form-group">
+            <label for="client-email">Ваш контактный E-mail</label>
+            <input type="email" id="client-email" placeholder="ceo@yourcompany.com">
+        </div>
+        <button class="submit-button" id="submit-btn">Получить точный расчёт и консультацию</button>
+        <div class="notification" id="notification-bar">
+            <strong>Спасибо!</strong> Ваши предварительные данные отправлены. Наш специалист свяжется с вами в течение 24 часов.
+        </div>
+    </div>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('input, select');
+    const submitButton = document.getElementById('submit-btn');
+    const notificationBar = document.getElementById('notification-bar');
+
+    function formatNumber(num) {
+        return new Intl.NumberFormat('ru-RU').format(Math.round(num));
+    }
+
+    function calculateAll() {
+        const dataRecovery = parseFloat(document.getElementById('data-recovery-cost').value) || 0;
+        const codeRecovery = parseFloat(document.getElementById('code-recovery-cost').value) || 0;
+        const businessInterruption = parseFloat(document.getElementById('business-interruption-cost').value) || 0;
+        const crisisCost = parseFloat(document.getElementById('crisis-cost').value) || 0;
+
+        const probableMaxLoss = dataRecovery + codeRecovery + businessInterruption + crisisCost;
+        document.getElementById('result-sum').textContent = formatNumber(probableMaxLoss) + ' ₽';
+        
+        let insuranceSumInput = document.getElementById('insurance-sum');
+        if (!insuranceSumInput.dataset.userTyped) {
+             insuranceSumInput.value = probableMaxLoss;
+        }
+
+        let insuranceSum = parseFloat(insuranceSumInput.value) || 0;
+       
+        const baseTariff = parseFloat(document.getElementById('industry-type').value);
+        const BGP = insuranceSum * baseTariff;
+
+        let ICZ = 0;
+        document.querySelectorAll('.icz-check:checked').forEach(checkbox => {
+            ICZ += parseInt(checkbox.dataset.value);
+        });
+        
+        const K = 200;
+        const finalCost = BGP * (1 - (ICZ / K));
+        document.getElementById('final-cost').textContent = formatNumber(finalCost) + ' ₽';
+        
+        const actualLoss = parseFloat(document.getElementById('actual-loss').value) || 0;
+        const minFranchise = 50000;
+        const franchisePercentage = 0.10;
+        
+        let franchiseAmount = actualLoss * franchisePercentage;
+        if (franchiseAmount < minFranchise) { franchiseAmount = minFranchise; }
+
+        let franchiseFromLimit = insuranceSum * franchisePercentage;
+        if(franchiseFromLimit < minFranchise) { franchiseFromLimit = minFranchise; }
+        const maxPossiblePayout = insuranceSum - franchiseFromLimit;
+        
+        let preliminaryPayout = actualLoss - franchiseAmount;
+        let finalPayout = Math.min(preliminaryPayout, maxPossiblePayout);
+        finalPayout = Math.max(0, finalPayout);
+        
+        document.getElementById('final-payout').textContent = formatNumber(finalPayout) + ' ₽';
+    }
+
+    document.getElementById('insurance-sum').addEventListener('input', function() {
+        this.dataset.userTyped = 'true';
+    });
+    
+    submitButton.addEventListener('click', function() {
+        const emailInput = document.getElementById('client-email');
+        if (emailInput.value && emailInput.value.includes('@')) {
+            console.log('--- ДАННЫЕ ДЛЯ ОТПРАВКИ ---');
+            console.log('Email клиента:', emailInput.value);
+            console.log('Рассчитанная стоимость:', document.getElementById('final-cost').textContent);
+            console.log('Выбранная страховая сумма:', document.getElementById('insurance-sum').value);
+
+            
+            notificationBar.style.display = 'block';
+            setTimeout(() => {
+                notificationBar.style.opacity = '1';
+            }, 10);
+
+            submitButton.style.display = 'none';
+            emailInput.style.display = 'none';
+            document.querySelector('#submit-btn + small, label[for="client-email"]').style.display = 'none';
+            
+        } else {
+            // Если email не введён или некорректен, подсвечиваем поле
+            emailInput.style.borderColor = 'var(--danger-color)';
+            emailInput.focus();
+        }
+    });
+
+
+    inputs.forEach(input => {
+        input.addEventListener('input', calculateAll);
+    });
+
+    window.addEventListener('load', calculateAll);
+</script>
+
+</body>
+</html>
